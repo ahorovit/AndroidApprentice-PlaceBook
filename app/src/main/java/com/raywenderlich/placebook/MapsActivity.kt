@@ -20,8 +20,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var map: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
-//    private var locationRequest: LocationRequest? = null // NOTE: using MyLocation functionality instead
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
@@ -71,36 +69,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         ) {
             requestLocationPermissions()
         } else {
-            // NOTE: Using MyLocation functionality instead
-//            if (locationRequest == null) {
-//                locationRequest = LocationRequest.create()
-//                locationRequest?.let { locationRequest ->
-//                    locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-//                    locationRequest.interval = 5000
-//                    locationRequest.fastestInterval = 1000
-//
-//                    val locationCallBack = object : LocationCallback() {
-//                        override fun onLocationResult(location: LocationResult?) {
-//                            getCurrentLocation()
-//                        }
-//                    }
-//
-//                    fusedLocationClient.requestLocationUpdates(
-//                        locationRequest,
-//                        locationCallBack,
-//                        null
-//                    )
-//                }
-//            }
-
             map.isMyLocationEnabled = true
 
             fusedLocationClient.lastLocation.addOnCompleteListener {
                 val location = it.result
                 if (location != null) {
                     val latLng = LatLng(location.latitude, location.longitude)
-//                    map.clear()
-//                    map.addMarker(MarkerOptions().position(latLng).title("You are here"))
                     val update = CameraUpdateFactory.newLatLngZoom(latLng, 16.0f)
                     map.moveCamera(update)
                 } else {
