@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:textColor="$ff000000"
+            android:textColor="#ff000000"
             android:textSize="14sp"
             android:textStyle="bold"
             tools:text="Place Title" />

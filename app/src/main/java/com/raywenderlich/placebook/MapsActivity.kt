@@ -24,6 +24,7 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPhotoRequest
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.PlacesClient
+import com.raywenderlich.placebook.adapter.BookmarkInfoWindowAdapter
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -45,6 +46,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
+        map.setInfoWindowAdapter(BookmarkInfoWindowAdapter(this))
         getCurrentLocation()
         map.setOnPoiClickListener {
             displayPoi(it)
@@ -78,11 +80,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         placesClient.fetchPlace(request).addOnSuccessListener { response ->
             val place = response.place
-//            Toast.makeText(
-//                this,
-//                "${place.name}, ${place.phoneNumber}",
-//                Toast.LENGTH_LONG
-//            ).show()
             displayPoiGetPhotoStep(place)
         }.addOnFailureListener { exception ->
             if (exception is ApiException) {
@@ -122,18 +119,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun displayPoiDisplayStep(place: Place, photo: Bitmap?) {
-        val iconPhoto = if (photo == null) {
-            BitmapDescriptorFactory.defaultMarker()
-        } else {
-            BitmapDescriptorFactory.fromBitmap(photo)
-        }
-
-        map.addMarker(MarkerOptions()
+        val marker = map.addMarker(MarkerOptions()
             .position(place.latLng as LatLng)
-            .icon(iconPhoto)
             .title(place.name)
             .snippet(place.phoneNumber)
         )
+        marker?.tag = photo
     }
 
     private fun requestLocationPermissions() {
