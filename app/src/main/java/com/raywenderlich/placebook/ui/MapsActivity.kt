@@ -29,6 +29,8 @@ import com.raywenderlich.placebook.viewmodel.MapsViewModel
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
+import kotlinx.android.synthetic.main.main_view_maps.*
+
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var map: GoogleMap
@@ -45,7 +47,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
 
         setupLocationClient()
+        setupToolbar()
         setupPlacesClient()
+    }
+
+    private fun setupToolbar() {
+        setSupportActionBar(toolbar)
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
