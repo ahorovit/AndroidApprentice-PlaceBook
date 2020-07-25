@@ -11,6 +11,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.location.*
 
@@ -26,8 +27,10 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.raywenderlich.placebook.R
 import com.raywenderlich.placebook.adapter.BookmarkInfoWindowAdapter
+import com.raywenderlich.placebook.adapter.BookmarkListAdapter
 import com.raywenderlich.placebook.viewmodel.MapsViewModel
 import kotlinx.android.synthetic.main.activity_maps.*
+import kotlinx.android.synthetic.main.drawer_view_maps.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -38,6 +41,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var map: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var placesClient: PlacesClient
+    private lateinit var bookmarkListAdapter: BookmarkListAdapter
     private val mapsViewModel by viewModels<MapsViewModel>() // viewModels() is a 'lazy delegate' -- requires Java 8 compatibility
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,6 +55,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         setupLocationClient()
         setupToolbar()
         setupPlacesClient()
+        setupNavigationDrawer()
     }
 
     private fun setupToolbar() {
@@ -63,6 +68,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             R.string.close_drawer
         )
         toggle.syncState()
+    }
+
+    private fun setupNavigationDrawer() {
+        bookmarkListAdapter = BookmarkListAdapter(null, this)
+        bookmarkRecyclerView.layoutManager = LinearLayoutManager(this)
+        bookmarkRecyclerView.adapter = bookmarkListAdapter
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -260,6 +271,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 map.clear()
                 it?.let {
                     displayAllBookmarks(it)
+                    bookmarkListAdapter.setBookmarkData(it)
                 }
             }
         )
