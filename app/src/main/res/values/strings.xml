@@ -11,4 +11,6 @@
     <string name="label_address">Address</string>
     <string name="save_button">Save</string>
     <string name="raywenderlich_com">raywenderlich.com</string>
+    <string name="open_drawer">Open Drawer</string>
+    <string name="close_drawer">Close Drawer</string>
 </resources>

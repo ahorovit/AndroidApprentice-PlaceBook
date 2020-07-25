@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import com.google.android.gms.common.api.ApiException
@@ -26,6 +27,7 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import com.raywenderlich.placebook.R
 import com.raywenderlich.placebook.adapter.BookmarkInfoWindowAdapter
 import com.raywenderlich.placebook.viewmodel.MapsViewModel
+import kotlinx.android.synthetic.main.activity_maps.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -53,6 +55,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun setupToolbar() {
         setSupportActionBar(toolbar)
+        val toggle = ActionBarDrawerToggle(
+            this,
+            drawerLayout,
+            toolbar,
+            R.string.open_drawer,
+            R.string.close_drawer
+        )
+        toggle.syncState()
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -226,14 +236,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun addPlaceMarker(bookmark: MapsViewModel.BookmarkMarkerView): Marker? {
-        val marker = map.addMarker(MarkerOptions()
-            .position(bookmark.location)
-            .title(bookmark.name)
-            .snippet(bookmark.phone)
-            .icon(BitmapDescriptorFactory.defaultMarker(
-                BitmapDescriptorFactory.HUE_AZURE
-            ))
-            .alpha(0.8f)
+        val marker = map.addMarker(
+            MarkerOptions()
+                .position(bookmark.location)
+                .title(bookmark.name)
+                .snippet(bookmark.phone)
+                .icon(
+                    BitmapDescriptorFactory.defaultMarker(
+                        BitmapDescriptorFactory.HUE_AZURE
+                    )
+                )
+                .alpha(0.8f)
         )
 
         marker.tag = bookmark
