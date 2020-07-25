@@ -69,7 +69,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         map = googleMap
         setupMapListeners()
         getCurrentLocation()
-        createBookmarkMarkerObserver()
+        createBookmarkObserver()
     }
 
     private fun setupMapListeners() {
@@ -169,9 +169,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
                 marker.remove()
             }
-            is MapsViewModel.BookmarkMarkerView -> {
+            is MapsViewModel.BookmarkView -> {
                 marker.hideInfoWindow()
-                val bookmark = marker.tag as MapsViewModel.BookmarkMarkerView
+                val bookmark = marker.tag as MapsViewModel.BookmarkView
                 bookmark.id?.let {
                     startBookmarkDetails(it)
                 }
@@ -229,13 +229,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun displayAllBookmarks(bookmarks: List<MapsViewModel.BookmarkMarkerView>) {
+    private fun displayAllBookmarks(bookmarks: List<MapsViewModel.BookmarkView>) {
         for (bookmark in bookmarks) {
             addPlaceMarker(bookmark)
         }
     }
 
-    private fun addPlaceMarker(bookmark: MapsViewModel.BookmarkMarkerView): Marker? {
+    private fun addPlaceMarker(bookmark: MapsViewModel.BookmarkView): Marker? {
         val marker = map.addMarker(
             MarkerOptions()
                 .position(bookmark.location)
@@ -253,10 +253,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         return marker
     }
 
-    private fun createBookmarkMarkerObserver() {
-        mapsViewModel.getBookmarkMarkerViews()?.observe(
+    private fun createBookmarkObserver() {
+        mapsViewModel.getBookmarkViews()?.observe(
             this,
-            Observer<List<MapsViewModel.BookmarkMarkerView>> {
+            Observer<List<MapsViewModel.BookmarkView>> {
                 map.clear()
                 it?.let {
                     displayAllBookmarks(it)
