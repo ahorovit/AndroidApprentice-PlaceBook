@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -14,7 +15,6 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.location.*
-
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -39,6 +39,7 @@ import kotlinx.android.synthetic.main.main_view_maps.*
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var map: GoogleMap
+    private var markers = HashMap<Long, Marker>()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var placesClient: PlacesClient
     private lateinit var bookmarkListAdapter: BookmarkListAdapter
@@ -240,6 +241,21 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    fun moveToBookmark(bookmark: MapsViewModel.BookmarkView) {
+        drawerLayout.closeDrawer(drawerView)
+        val marker = markers[bookmark.id]
+        marker?.showInfoWindow()
+        val location = Location("")
+        location.latitude = bookmark.location.latitude
+        location.longitude = bookmark.location.longitude
+        updateMapToLocation(location)
+    }
+
+    private fun updateMapToLocation(location: Location) {
+        val latLng = LatLng(location.latitude, location.longitude)
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.0f))
+    }
+
     private fun displayAllBookmarks(bookmarks: List<MapsViewModel.BookmarkView>) {
         for (bookmark in bookmarks) {
             addPlaceMarker(bookmark)
@@ -260,6 +276,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 .alpha(0.8f)
         )
 
+        bookmark.id?.let { markers.put(it, marker) }
+
         marker.tag = bookmark
         return marker
     }
@@ -269,6 +287,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             this,
             Observer<List<MapsViewModel.BookmarkView>> {
                 map.clear()
+                markers.clear()
+
                 it?.let {
                     displayAllBookmarks(it)
                     bookmarkListAdapter.setBookmarkData(it)
