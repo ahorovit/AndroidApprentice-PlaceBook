@@ -3,8 +3,10 @@ package com.raywenderlich.placebook.util
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import com.raywenderlich.placebook.R
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.lang.Exception
 
