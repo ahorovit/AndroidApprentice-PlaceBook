@@ -1,6 +1,7 @@
 package com.raywenderlich.placebook.ui
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -128,6 +129,10 @@ class BookmarkDetailsActivity : AppCompatActivity(), PhotoOptionDialogListener {
                 saveChanges()
                 true
             }
+            R.id.action_delete -> {
+                deleteBookmark()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -238,6 +243,20 @@ class BookmarkDetailsActivity : AppCompatActivity(), PhotoOptionDialogListener {
             bookmarkDetailsViewModel.updateBookmark(bookmarkView)
         }
         finish()
+    }
+
+    private fun deleteBookmark() {
+        val bookmarkView = bookmarkDetailsView ?: return
+
+        AlertDialog.Builder(this)
+            .setMessage(getString(R.string.confirm_delete))
+            .setPositiveButton(getString(R.string.ok)) { _, _ ->
+                bookmarkDetailsViewModel.deleteBookmark(bookmarkView, this)
+                finish()
+            }
+            .setNegativeButton(getString(R.string.cancel), null)
+            .create()
+            .show()
     }
 
     companion object {

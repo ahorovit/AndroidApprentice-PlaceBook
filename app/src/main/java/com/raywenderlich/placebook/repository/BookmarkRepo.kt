@@ -88,4 +88,9 @@ class BookmarkRepo(context: Context) {
     fun getCategoryResourceId(placeCategory: String): Int? {
         return allCategories[placeCategory]
     }
+
+    fun deleteBookmark(bookmark: Bookmark, context: Context) {
+        bookmark.deleteImage(context)
+        bookmarkDao.deleteBookmark(bookmark)
+    }
 }

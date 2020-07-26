@@ -18,4 +18,8 @@
     <string name="photo_dialog_title">Photo Option</string>
     <string name="option_cancel">Cancel</string>
     <string name="category_label">Category</string>
+    <string name="delete_button">Delete</string>
+    <string name="confirm_delete">Delete?</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
 </resources>
