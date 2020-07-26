@@ -3,6 +3,7 @@ package com.raywenderlich.placebook.util
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Environment
 import com.raywenderlich.placebook.R
 import java.io.*
@@ -71,5 +72,39 @@ object ImageUtils {
         }
 
         return inSampleSize
+    }
+
+    fun decodeUriStreamToSize(uri: Uri, width: Int, height: Int, context: Context): Bitmap? {
+        var inputStream: InputStream? = null
+        val options: BitmapFactory.Options = BitmapFactory.Options()
+
+        try {
+            // opens inputStream from the file uri
+            inputStream = context.contentResolver.openInputStream(uri) ?: return null
+
+            // image size is determined
+            options.inJustDecodeBounds = true // only read image size
+            BitmapFactory.decodeStream(inputStream, null, options)
+            inputStream.close()
+
+            // reopen inputStream
+            inputStream = context.contentResolver.openInputStream(uri) ?: return null
+
+            // read image file, downsampled
+            options.inSampleSize = calculateInSampleSize(
+                options.outWidth,
+                options.outHeight,
+                width,
+                height
+            )
+            options.inJustDecodeBounds = false
+            val bitmap = BitmapFactory.decodeStream(inputStream, null, options)
+            inputStream.close()
+            return bitmap
+        } catch (e: Exception) {
+            return null
+        } finally {
+            inputStream?.close()
+        }
     }
 }

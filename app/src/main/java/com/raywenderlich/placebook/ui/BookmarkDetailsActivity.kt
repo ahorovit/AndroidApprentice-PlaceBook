@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.Menu
@@ -107,6 +108,12 @@ class BookmarkDetailsActivity : AppCompatActivity(), PhotoOptionDialogListener {
                     val image = getImageWithPath(photoFile.absolutePath)
                     image?.let { updateImage(it) }
                 }
+                REQUEST_GALLERY_IMAGE -> if (data != null && data.data != null)
+                {
+                    val imageUri = data.data as Uri
+                    val image = getImageWithAuthority(imageUri)
+                    image?.let { updateImage(it) }
+                }
             }
         }
     }
@@ -157,7 +164,17 @@ class BookmarkDetailsActivity : AppCompatActivity(), PhotoOptionDialogListener {
     }
 
     override fun onPickClick() {
-        Toast.makeText(this, "Gallery Pick", Toast.LENGTH_SHORT).show()
+        val pickIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        startActivityForResult(pickIntent, REQUEST_GALLERY_IMAGE)
+    }
+
+    private fun getImageWithAuthority(uri: Uri): Bitmap? {
+        return ImageUtils.decodeUriStreamToSize(
+            uri,
+            resources.getDimensionPixelSize(R.dimen.default_image_width),
+            resources.getDimensionPixelSize(R.dimen.default_image_height),
+            this
+        )
     }
 
     private fun replaceImage() {
@@ -183,5 +200,6 @@ class BookmarkDetailsActivity : AppCompatActivity(), PhotoOptionDialogListener {
 
     companion object {
         private const val REQUEST_CAPTURE_IMAGE = 1
+        private const val REQUEST_GALLERY_IMAGE = 2
     }
 }
