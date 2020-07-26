@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -54,6 +55,7 @@ class BookmarkDetailsActivity : AppCompatActivity(), PhotoOptionDialogListener {
                     bookmarkDetailsView = it
                     populateFields()
                     populateImageView()
+                    populateCategoryList()
                 }
             }
         )
@@ -79,6 +81,22 @@ class BookmarkDetailsActivity : AppCompatActivity(), PhotoOptionDialogListener {
         imageViewPlace.setOnClickListener {
             replaceImage()
         }
+    }
+
+    private fun populateCategoryList() {
+        val bookmarkView = bookmarkDetailsView ?: return
+        val resourceId = bookmarkDetailsViewModel.getCategoryResourceId(bookmarkView.category)
+
+        resourceId?.let { imageViewCategory.setImageResource(it) }
+
+        val adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_item,
+            bookmarkDetailsViewModel.getCategories()
+        )
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerCategory.adapter = adapter
+        spinnerCategory.setSelection(adapter.getPosition(bookmarkView.category))
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

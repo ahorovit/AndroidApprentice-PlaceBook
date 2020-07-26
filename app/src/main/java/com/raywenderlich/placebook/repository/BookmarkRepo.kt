@@ -14,6 +14,10 @@ class BookmarkRepo(context: Context) {
     private var categoryMap = buildCategoryMap()
     private var allCategories = buildCategories()
 
+    val categories: List<String>
+        get() = ArrayList(allCategories.keys)
+
+
     val allBookmarks: LiveData<List<Bookmark>>
         get() {
             return bookmarkDao.loadAll()

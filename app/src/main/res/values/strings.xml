@@ -17,4 +17,5 @@
     <string name="option_gallery">Gallery</string>
     <string name="photo_dialog_title">Photo Option</string>
     <string name="option_cancel">Cancel</string>
+    <string name="category_label">Category</string>
 </resources>
