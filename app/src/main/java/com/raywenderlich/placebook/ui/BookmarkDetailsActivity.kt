@@ -1,7 +1,9 @@
 package com.raywenderlich.placebook.ui
 
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.Menu
@@ -88,6 +90,40 @@ class BookmarkDetailsActivity : AppCompatActivity(), PhotoOptionDialogListener {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                REQUEST_CAPTURE_IMAGE -> {
+                    val photoFile = photoFile ?: return
+                    val uri = FileProvider.getUriForFile(
+                        this,
+                        "com.raywenderlich.placebook.fileprovider",
+                        photoFile
+                    )
+                    revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+
+                    val image = getImageWithPath(photoFile.absolutePath)
+                    image?.let { updateImage(it) }
+                }
+            }
+        }
+    }
+
+    private fun getImageWithPath(filePath: String): Bitmap? {
+        return ImageUtils.decodeFileToSize(
+            filePath,
+            resources.getDimensionPixelSize(R.dimen.default_image_width),
+            resources.getDimensionPixelSize(R.dimen.default_image_height)
+        )
+    }
+
+    private fun updateImage(image: Bitmap) {
+        val bookmarkView = bookmarkDetailsView ?: return
+        imageViewPlace.setImageBitmap(image)
+        bookmarkView.setImage(this, image)
+    }
 
     override fun onCaptureClick() {
         photoFile = null

@@ -77,5 +77,11 @@ class BookmarkDetailsViewModel(application: Application) : AndroidViewModel(appl
             }
             return null
         }
+
+        fun setImage(context: Context, image: Bitmap) {
+            id?.let {
+                ImageUtils.saveBitmapToFile(context, image, Bookmark.generateImageFilename(it))
+            }
+        }
     }
 }
